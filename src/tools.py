@@ -31,7 +31,7 @@ from __future__ import annotations
 import hashlib
 import random
 from datetime import date, timedelta
-from typing import Optional
+from typing import Literal, Optional
 
 from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
@@ -169,6 +169,56 @@ def escalate_to_human(reason: str, customer_sentiment: str = "neutral") -> dict:
     }
 
 
+# ── Sentiment detection ──────────────────────────────────────────────────────
+
+# Keyword sets ordered from strongest signal to weakest.
+# Rule-based is sufficient for a PoC — no extra model or latency.
+# In production, swap the body of detect_sentiment() for a proper model call;
+# the return values and the rest of the system stay the same.
+
+_ANGRY_KEYWORDS = {
+    "furious", "outraged", "outrageous", "unacceptable", "disgusting",
+    "disgusted", "terrible", "awful", "horrible", "worst", "ridiculous",
+    "incompetent", "scam", "fraud", "useless", "pathetic",
+}
+
+_FRUSTRATED_KEYWORDS = {
+    "frustrated", "frustrating", "disappointed", "disappointing",
+    "not working", "still waiting", "weeks", "never arrived", "nobody",
+    "no response", "ignored", "wrong", "broken", "failed", "problem",
+    "issue", "can't", "cannot", "why", "how long", "again",
+}
+
+_POSITIVE_KEYWORDS = {
+    "thank", "thanks", "thank you", "great", "excellent", "perfect",
+    "happy", "good", "appreciate", "helpful", "resolved", "solved",
+    "wonderful", "amazing", "love", "pleased",
+}
+
+SentimentLabel = Literal["positive", "neutral", "frustrated", "angry"]
+
+
+def detect_sentiment(text: str) -> SentimentLabel:
+    """
+    Classify the sentiment of a customer message.
+
+    Returns one of: positive | neutral | frustrated | angry
+
+    Precedence: angry > frustrated > positive > neutral
+    This is intentionally simple for the PoC — replace the body with a
+    model call (e.g. a HuggingFace zero-shot classifier) for production.
+    """
+    lower = text.lower()
+
+    if any(kw in lower for kw in _ANGRY_KEYWORDS):
+        return "angry"
+    if any(kw in lower for kw in _FRUSTRATED_KEYWORDS):
+        return "frustrated"
+    if any(kw in lower for kw in _POSITIVE_KEYWORDS):
+        return "positive"
+    return "neutral"
+
+
 # ── LangChain tool wrappers ──────────────────────────────────────────────────
 
 TRACKING_TOOL = StructuredTool.from_function(
@@ -229,4 +279,17 @@ if __name__ == "__main__":
 
     print("\n" + "=" * 60)
     print(f"APG_TOOLS registered: {[t.name for t in APG_TOOLS]}")
-    print("Smoke test passed.")
+
+    print("\n" + "=" * 60)
+    print("Sentiment detection")
+    print("=" * 60)
+    samples = [
+        "Thank you, that was very helpful!",
+        "Where is my parcel?",
+        "This is absolutely unacceptable, I've been waiting 3 weeks",
+        "I'm disappointed, nobody has responded to my issue",
+    ]
+    for s in samples:
+        print(f"  {detect_sentiment(s):>12}  →  {s}")
+
+    print("\nSmoke test passed.")

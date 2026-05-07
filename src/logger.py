@@ -30,6 +30,10 @@ Management metrics this data supports:
   │ Topics most retrieved       │ GROUP BY topics_retrieved in turns     │
   │ Escalation rate             │ escalated / engaged                    │
   │ Resolution rate             │ resolved / engaged                     │
+  │ CSAT rating (avg)           │ AVG(csat_rating) in sessions.jsonl     │
+  │ CSAT response rate          │ COUNT WHERE csat_rating IS NOT NULL    │
+  │ Sentiment per turn          │ sentiment field in turns.jsonl         │
+  │ Sessions ending angry       │ WHERE final_sentiment=angry            │
   └─────────────────────────────┴────────────────────────────────────────┘
 
 Usage:
@@ -88,6 +92,7 @@ class ConversationLogger:
         latency_ms: float = 0.0,
         input_tokens: int = 0,
         output_tokens: int = 0,
+        sentiment: Optional[str] = None,
     ) -> dict:
         """
         Record one question→answer turn.
@@ -101,6 +106,9 @@ class ConversationLogger:
         latency_ms    : wall-clock time from question receipt to answer ready
         input_tokens  : tokens sent to Claude (for cost tracking)
         output_tokens : tokens returned by Claude (for cost tracking)
+        sentiment     : detected sentiment of the user's message
+                        (positive | neutral | frustrated | angry)
+                        Pass None to skip — app.py calls detect_sentiment() first.
         """
         turn_number = len(self.turns) + 1
         topics = _extract_topics(retrieved_docs)
@@ -115,10 +123,12 @@ class ConversationLogger:
             "question":      question,
             "answer":        answer,
             "tool_called":   tool_called,
+            # ── sentiment ────────────────────────────────────────────
+            "sentiment":     sentiment,          # positive/neutral/frustrated/angry
             # ── retrieval ────────────────────────────────────────────
             "chunks_retrieved": len(retrieved_docs),
-            "topics_retrieved": topics,      # e.g. ["wismo","how_to_pay"]
-            "item_ids_retrieved": item_ids,  # e.g. ["Item_003","Item_005"]
+            "topics_retrieved": topics,
+            "item_ids_retrieved": item_ids,
             # ── performance ──────────────────────────────────────────
             "latency_ms":    round(latency_ms, 1),
             # ── cost / consumption ───────────────────────────────────
@@ -131,12 +141,18 @@ class ConversationLogger:
         self.turns.append(record)
         return record
 
-    def close(self, outcome: Outcome) -> dict:
+    def close(self, outcome: Outcome, csat_rating: Optional[int] = None) -> dict:
         """
         Write the session summary record and return it.
 
         Call this exactly once — when the conversation ends for any reason.
-        outcome must be one of: resolved | escalated | abandoned | unengaged
+
+        Parameters
+        ----------
+        outcome     : resolved | escalated | abandoned | unengaged
+        csat_rating : customer satisfaction score 0-5 (stars), or None if
+                      the customer did not rate. app.py passes this after
+                      the user submits the star widget.
         """
         engaged = len(self.turns) > 0
         total_turns = len(self.turns)
@@ -152,6 +168,20 @@ class ConversationLogger:
             all_topics.extend(t.get("topics_retrieved", []))
         unique_topics = sorted(set(all_topics))
 
+        # Sentiment distribution across all turns
+        sentiments = [t.get("sentiment") for t in self.turns if t.get("sentiment")]
+        sentiment_counts = {
+            "positive":   sentiments.count("positive"),
+            "neutral":    sentiments.count("neutral"),
+            "frustrated": sentiments.count("frustrated"),
+            "angry":      sentiments.count("angry"),
+        }
+        # Final sentiment = sentiment of the last turn that has one
+        final_sentiment = next(
+            (t.get("sentiment") for t in reversed(self.turns) if t.get("sentiment")),
+            None,
+        )
+
         record: dict = {
             # ── identifiers ─────────────────────────────────────────
             "session_id":        self.session_id,
@@ -159,8 +189,8 @@ class ConversationLogger:
             "ended_at":          _utcnow(),
             # ── engagement & outcome ─────────────────────────────────
             "engaged":           engaged,
-            "outcome":           outcome,           # resolved/escalated/abandoned/unengaged
-            "escalated_at_turn": escalated_turn,    # None if not escalated
+            "outcome":           outcome,
+            "escalated_at_turn": escalated_turn,
             # ── volume ───────────────────────────────────────────────
             "total_turns":       total_turns,
             # ── performance ──────────────────────────────────────────
@@ -173,6 +203,11 @@ class ConversationLogger:
             # ── topic coverage ───────────────────────────────────────
             "topics_touched":    unique_topics,
             "topic_count":       len(unique_topics),
+            # ── sentiment ────────────────────────────────────────────
+            "sentiment_counts":  sentiment_counts,
+            "final_sentiment":   final_sentiment,  # sentiment at session end
+            # ── CSAT ─────────────────────────────────────────────────
+            "csat_rating":       csat_rating,       # 0-5 stars, None if not rated
         }
 
         self._append_jsonl(self.SESSIONS_FILE, record)
@@ -240,13 +275,17 @@ if __name__ == "__main__":
     # Turn 1
     with timer() as t:
         pass  # simulate work
-    log.log_turn("Where is my order?", fake_docs[:1], "Your order is in transit.", latency_ms=t.elapsed_ms, input_tokens=120, output_tokens=45)
+    log.log_turn("Where is my order?", fake_docs[:1], "Your order is in transit.",
+                 latency_ms=t.elapsed_ms, input_tokens=120, output_tokens=45,
+                 sentiment="neutral")
 
     # Turn 2
-    log.log_turn("What if the payment link is broken?", fake_docs, "Try requesting a new payment link.", latency_ms=310.5, input_tokens=180, output_tokens=60)
+    log.log_turn("What if the payment link is broken?", fake_docs, "Try requesting a new payment link.",
+                 latency_ms=310.5, input_tokens=180, output_tokens=60,
+                 sentiment="frustrated")
 
-    # Close session
-    summary = log.close(outcome="resolved")
+    # Close session with CSAT rating = 4 stars
+    summary = log.close(outcome="resolved", csat_rating=4)
 
     print("\nSession summary:")
     print(json.dumps(summary, indent=2))
