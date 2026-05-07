@@ -37,6 +37,7 @@ from src.loader import load_all_kb_files
 # Module-level singletons
 _reranker: CrossEncoder | None = None
 _ensemble: EnsembleRetriever | None = None
+_reranking_retriever: "RerankingRetriever | None" = None
 
 
 def get_reranker() -> CrossEncoder:
@@ -178,8 +179,11 @@ class RerankingRetriever:
 
 
 def get_reranking_retriever() -> RerankingRetriever:
-    """Convenience factory — returns a ready-to-use RerankingRetriever."""
-    return RerankingRetriever()
+    """Singleton — returns the shared RerankingRetriever, building it once per process."""
+    global _reranking_retriever
+    if _reranking_retriever is None:
+        _reranking_retriever = RerankingRetriever()
+    return _reranking_retriever
 
 
 # ── Smoke test ──────────────────────────────────────────────────────────────

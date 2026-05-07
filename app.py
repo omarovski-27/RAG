@@ -33,7 +33,8 @@ from dotenv import load_dotenv
 
 from src.logger import ConversationLogger, timer
 import time
-from src.memory import ask_with_memory, clear_session, stream_with_memory
+from src.memory import clear_session, stream_with_memory
+from src.retriever import get_reranking_retriever
 from src.tools import (
     ESCALATION_TOOL,
     TRACKING_TOOL,
@@ -44,6 +45,13 @@ from src.tools import (
 
 load_dotenv()
 
+
+@st.cache_resource
+def _load_retriever():
+    """Build retriever once per process; survives Streamlit reruns and hot-reloads."""
+    return get_reranking_retriever()
+
+
 # ── Page config ──────────────────────────────────────────────────────────────
 
 st.set_page_config(
@@ -51,6 +59,9 @@ st.set_page_config(
     page_icon="📦",
     layout="centered",
 )
+
+# Warm the retriever on first load; @st.cache_resource returns instantly thereafter.
+_retriever = _load_retriever()
 
 # ── Session state bootstrap ──────────────────────────────────────────────────
 # st.session_state persists across Streamlit reruns within the same browser tab.
@@ -277,11 +288,20 @@ if user_input := st.chat_input(placeholder, disabled=input_disabled):
     # ── RAG answer (streamed) ─────────────────────────────────────────────
     with st.chat_message("assistant", avatar="📦"):
         with st.spinner("Searching knowledge base…"):
+            # Retrieval is blocking and completes inside this spinner block.
+            # stream_with_memory returns a token generator; LLM streaming starts below.
             token_iter, docs, t0 = stream_with_memory(
                 user_input,
                 session_id=st.session_state.session_id,
+                retriever=_retriever,
             )
-        answer = st.write_stream(token_iter)
+        response_placeholder = st.empty()
+        full_response = ""
+        for token in token_iter:
+            full_response += token
+            response_placeholder.markdown(full_response + "▌")
+        response_placeholder.markdown(full_response)
+        answer = full_response
         latency = (time.perf_counter() - t0) * 1000
         topics = list({d.metadata.get("topic", "?") for d in docs})
         st.caption(f"⚡ {latency:.0f}ms · {len(docs)} chunks from: {', '.join(topics)}")
