@@ -237,35 +237,51 @@ def stream_with_memory(
     """
     Streaming variant of ask_with_memory.
 
+    Bypasses RunnableWithMessageHistory (which buffers the full response
+    before yielding) and instead:
+      1. Loads history manually
+      2. Formats the prompt with history injected
+      3. Streams directly from the LLM
+      4. Saves Human + AI messages to history after the stream is consumed
+
     Returns
     -------
     token_iter    : generator of string tokens — pass to st.write_stream()
     retrieved_docs: reranked chunks (for logger)
-    start         : perf_counter() timestamp before retrieval started —
-                    caller computes latency = (time.perf_counter() - start) * 1000
-                    AFTER consuming the stream.
+    start         : perf_counter() timestamp — compute latency after consuming stream
     """
-    from typing import Iterator  # local import avoids circular at module level
+    from typing import Iterator
+    from langchain_core.messages import AIMessage, HumanMessage
 
     if retriever is None:
         retriever = get_reranking_retriever()
-
-    chain = get_memory_chain_stream(retriever)
 
     start = time.perf_counter()
     docs = retriever.get_relevant_documents(question)
     context = _format_docs(docs)
 
-    raw_stream = chain.stream(
-        {"question": question, "context": context},
-        config={"configurable": {"session_id": session_id}},
+    # Inject history manually so we can stream the LLM directly
+    history = get_session_history(session_id)
+    prompt = get_rag_prompt_v2()
+    messages = prompt.format_messages(
+        context=context,
+        history=history.messages,
+        question=question,
     )
 
+    llm = get_llm(streaming=True)
+    raw_stream = llm.stream(messages)
+
     def _token_iter() -> Iterator[str]:
+        full_response: list[str] = []
         for chunk in raw_stream:
-            if chunk:
-                yield chunk
-        # Trim history after stream is fully consumed
+            token = chunk.content if hasattr(chunk, "content") else str(chunk)
+            if token:
+                full_response.append(token)
+                yield token
+        # Persist the turn to history after stream is fully consumed
+        history.add_user_message(question)
+        history.add_ai_message("".join(full_response))
         _trim_history(session_id)
 
     return _token_iter(), docs, start

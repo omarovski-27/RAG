@@ -276,10 +276,11 @@ if user_input := st.chat_input(placeholder, disabled=input_disabled):
 
     # ── RAG answer (streamed) ─────────────────────────────────────────────
     with st.chat_message("assistant", avatar="📦"):
-        token_iter, docs, t0 = stream_with_memory(
-            user_input,
-            session_id=st.session_state.session_id,
-        )
+        with st.spinner("Searching knowledge base…"):
+            token_iter, docs, t0 = stream_with_memory(
+                user_input,
+                session_id=st.session_state.session_id,
+            )
         answer = st.write_stream(token_iter)
         latency = (time.perf_counter() - t0) * 1000
         topics = list({d.metadata.get("topic", "?") for d in docs})

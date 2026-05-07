@@ -80,6 +80,11 @@ class ConversationLogger:
         self.started_at: str = _utcnow()
         self.turns: list[dict] = []
 
+    @property
+    def turn_number(self) -> int:
+        """Number of turns logged so far in this session."""
+        return len(self.turns)
+
     # ── Public API ───────────────────────────────────────────────────────
 
     def log_turn(
