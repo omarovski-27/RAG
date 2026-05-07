@@ -290,7 +290,8 @@ if user_input := st.chat_input(placeholder, disabled=input_disabled):
         with st.spinner("Searching knowledge base…"):
             # Retrieval is blocking and completes inside this spinner block.
             # stream_with_memory returns a token generator; LLM streaming starts below.
-            token_iter, docs, t0 = stream_with_memory(
+            # usage dict is empty until the generator is fully consumed.
+            token_iter, docs, t0, usage = stream_with_memory(
                 user_input,
                 session_id=st.session_state.session_id,
                 retriever=_retriever,
@@ -306,6 +307,10 @@ if user_input := st.chat_input(placeholder, disabled=input_disabled):
         topics = list({d.metadata.get("topic", "?") for d in docs})
         st.caption(f"⚡ {latency:.0f}ms · {len(docs)} chunks from: {', '.join(topics)}")
 
+    # usage dict is now populated (generator fully consumed above)
+    input_tokens  = usage.get("input_tokens",  0)
+    output_tokens = usage.get("output_tokens", 0)
+
     st.session_state.messages.append({
         "role": "assistant",
         "content": answer,
@@ -317,5 +322,7 @@ if user_input := st.chat_input(placeholder, disabled=input_disabled):
         docs,
         answer,
         latency_ms=latency,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
         sentiment=sentiment,
     )

@@ -233,7 +233,7 @@ def stream_with_memory(
     question: str,
     session_id: str,
     retriever: RerankingRetriever | None = None,
-) -> Tuple["Iterator[str]", List[Document], float]:
+) -> Tuple["Iterator[str]", List[Document], float, dict]:
     """
     Streaming variant of ask_with_memory.
 
@@ -249,6 +249,8 @@ def stream_with_memory(
     token_iter    : generator of string tokens — pass to st.write_stream()
     retrieved_docs: reranked chunks (for logger)
     start         : perf_counter() timestamp — compute latency after consuming stream
+    usage         : mutable dict populated with input_tokens/output_tokens once
+                    the generator is fully consumed (empty until then)
     """
     from typing import Iterator
     from langchain_core.messages import AIMessage, HumanMessage
@@ -272,19 +274,39 @@ def stream_with_memory(
     llm = get_llm(streaming=True)
     raw_stream = llm.stream(messages)
 
+    # Mutable container shared via closure; populated when the generator finishes.
+    usage: dict = {}
+
     def _token_iter() -> Iterator[str]:
         full_response: list[str] = []
+        last_meta = None
         for chunk in raw_stream:
+            # usage_metadata is set on the final chunk by langchain_anthropic
+            if getattr(chunk, "usage_metadata", None):
+                last_meta = chunk.usage_metadata
             token = chunk.content if hasattr(chunk, "content") else str(chunk)
             if token:
                 full_response.append(token)
                 yield token
+        # Extract token counts from the last chunk that carried usage metadata.
+        if last_meta is not None:
+            # usage_metadata is a TypedDict-like object; supports both [] and .get()
+            usage["input_tokens"]  = (
+                last_meta.get("input_tokens", 0)
+                if hasattr(last_meta, "get")
+                else getattr(last_meta, "input_tokens", 0)
+            )
+            usage["output_tokens"] = (
+                last_meta.get("output_tokens", 0)
+                if hasattr(last_meta, "get")
+                else getattr(last_meta, "output_tokens", 0)
+            )
         # Persist the turn to history after stream is fully consumed
         history.add_user_message(question)
         history.add_ai_message("".join(full_response))
         _trim_history(session_id)
 
-    return _token_iter(), docs, start
+    return _token_iter(), docs, start, usage
 
 
 def _format_docs(docs: List[Document]) -> str:

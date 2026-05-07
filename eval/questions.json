@@ -1,0 +1,299 @@
+[
+  {
+    "id": "WISMO-001",
+    "question": "Where is my parcel? The tracking hasn't updated in 3 days",
+    "expected_topic": "wismo",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "Customers track on https://apgecommerce.com/track using their reference number. Grey stages are not errors. If 4+ days past ETA, contact the retailer who raises a case with APG.",
+    "must_mention": ["apgecommerce.com/track", "retailer"],
+    "must_not_mention": ["contact APG directly to locate your parcel"]
+  },
+  {
+    "id": "WISMO-002",
+    "question": "My tracking says Shipment Created Awaiting Receipt and nothing has changed, what does that mean?",
+    "expected_topic": "wismo",
+    "expected_item_ids": ["Item_002"],
+    "ground_truth_summary": "This status means APG has the order data but has not yet physically received the parcel — it is still with the retailer. Contact the retailer for a dispatch update.",
+    "must_mention": ["retailer", "not yet"],
+    "must_not_mention": ["parcel is lost", "delayed by APG"]
+  },
+  {
+    "id": "WISMO-003",
+    "question": "My tracking shows Master Closed and hasn't moved for 6 days — is my parcel lost?",
+    "expected_topic": "wismo",
+    "expected_item_ids": ["Item_003"],
+    "ground_truth_summary": "Master Closed is a normal in-transit status meaning the parcel is consolidated with other shipments travelling between countries. No action is needed. Tracking updates when the parcel reaches the destination facility.",
+    "must_mention": ["normal", "consolidated"],
+    "must_not_mention": ["lost", "problem with your parcel"]
+  },
+  {
+    "id": "WISMO-004",
+    "question": "My tracking says scanned awaiting information or action from customer — what do I need to do?",
+    "expected_topic": "wismo",
+    "expected_item_ids": ["Item_004"],
+    "ground_truth_summary": "APG needs ID documentation before customs clearance. An email with a secure link has been sent. Check spam and junk folders if not found in inbox. A passport is accepted.",
+    "must_mention": ["email", "spam", "ID"],
+    "must_not_mention": []
+  },
+  {
+    "id": "WISMO-005",
+    "question": "I need to change my delivery address urgently, I've moved house",
+    "expected_topic": "wismo",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "Address changes must be made through the final mile carrier, not APG. The customer should contact the carrier directly with their tracking number.",
+    "must_mention": ["final mile carrier", "tracking number"],
+    "must_not_mention": ["contact APG to change the address"]
+  },
+  {
+    "id": "THR-001",
+    "question": "What is the duty threshold for Saudi Arabia? My order is about 800 SAR",
+    "expected_topic": "thresholds_by_country",
+    "expected_item_ids": ["Item_004", "Item_002"],
+    "ground_truth_summary": "Saudi Arabia's duty-free threshold is SAR 1,000+. Importantly, Saudi Arabia includes cost, insurance, and freight (CIF) in the valuation — not just the goods value. An order of SAR 800 would be below this threshold.",
+    "must_mention": ["SAR 1,000", "CIF"],
+    "must_not_mention": []
+  },
+  {
+    "id": "THR-002",
+    "question": "I'm shipping to the UAE, is there a minimum amount before duties kick in?",
+    "expected_topic": "thresholds_by_country",
+    "expected_item_ids": ["Item_003", "Item_004"],
+    "ground_truth_summary": "UAE has no minimum threshold — duties apply to all orders regardless of value (zero threshold).",
+    "must_mention": ["UAE", "zero"],
+    "must_not_mention": ["UAE has a threshold above zero"]
+  },
+  {
+    "id": "THR-003",
+    "question": "What's the duty threshold for Japan? I'm buying something worth JPY 8,000",
+    "expected_topic": "thresholds_by_country",
+    "expected_item_ids": ["Item_004"],
+    "ground_truth_summary": "Japan's duty-free threshold is JPY 10,000. An order of JPY 8,000 would be below this threshold and should not attract duties.",
+    "must_mention": ["JPY 10,000", "Japan"],
+    "must_not_mention": []
+  },
+  {
+    "id": "THR-004",
+    "question": "Is there a table somewhere that shows me what the threshold is for different countries?",
+    "expected_topic": "thresholds_by_country",
+    "expected_item_ids": ["Item_004", "Item_001"],
+    "ground_truth_summary": "APG has a reference table of duty-free thresholds by country. If your country is not listed, contact APG or the retailer — no default rule applies.",
+    "must_mention": ["threshold", "country"],
+    "must_not_mention": []
+  },
+  {
+    "id": "PAY-001",
+    "question": "Can I pay my duties using PayPal? That's how I always pay online",
+    "expected_topic": "how_to_pay",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "Only credit or debit card payment is accepted. PayPal is not accepted under any circumstances. Money transfers are also not accepted.",
+    "must_mention": ["PayPal is not accepted", "credit or debit card"],
+    "must_not_mention": ["PayPal is accepted"]
+  },
+  {
+    "id": "PAY-002",
+    "question": "The payment link APG sent me isn't loading, it just spins forever. What do I do?",
+    "expected_topic": "how_to_pay",
+    "expected_item_ids": ["Item_003"],
+    "ground_truth_summary": "Try a different browser, disable pop-up and ad blockers, and clear browser cache and history (last 7 days). If it still fails, call APG at +44 203 962 0242 to complete payment by phone.",
+    "must_mention": ["browser", "cache", "+44 203 962 0242"],
+    "must_not_mention": []
+  },
+  {
+    "id": "PAY-003",
+    "question": "My card keeps getting declined when I try to pay the duties, and my bank is asking for a one-time password",
+    "expected_topic": "how_to_pay",
+    "expected_item_ids": ["Item_004"],
+    "ground_truth_summary": "This is a bank-side security check, not an APG issue. The customer must contact their card issuer directly to authorise the transaction.",
+    "must_mention": ["bank", "card issuer"],
+    "must_not_mention": ["APG system error", "APG can override"]
+  },
+  {
+    "id": "PAY-004",
+    "question": "I missed the deadline and the payment link has expired now. Can you send me a new one?",
+    "expected_topic": "how_to_pay",
+    "expected_item_ids": ["Item_005"],
+    "ground_truth_summary": "Expired payment links cannot be reissued. When a link expires, the parcel is automatically scheduled for return to the retailer and no further action is possible from APG.",
+    "must_mention": ["cannot be reissued", "returned to the retailer"],
+    "must_not_mention": ["new link will be sent", "new link can be issued"]
+  },
+  {
+    "id": "HELD-001",
+    "question": "I was told I need to pay duties but I haven't received any email about it",
+    "expected_topic": "order_held_pending_payment",
+    "expected_item_ids": ["Item_003"],
+    "ground_truth_summary": "APG sends the payment link and password via email only — not SMS or WhatsApp. The email goes to the address provided to the retailer at purchase. Check spam and junk folders first.",
+    "must_mention": ["email", "spam", "junk"],
+    "must_not_mention": ["SMS will be sent", "WhatsApp message"]
+  },
+  {
+    "id": "HELD-002",
+    "question": "How many days do I actually have to pay before they return my parcel?",
+    "expected_topic": "order_held_pending_payment",
+    "expected_item_ids": ["Item_004"],
+    "ground_truth_summary": "The standard holding period is 7 days from the date the payment request is sent. If payment is not made within 7 days, the parcel is automatically returned to the retailer.",
+    "must_mention": ["7 days", "automatically returned"],
+    "must_not_mention": []
+  },
+  {
+    "id": "HELD-003",
+    "question": "My parcel tracking says it's waiting for duties payment — is that status right?",
+    "expected_topic": "order_held_pending_payment",
+    "expected_item_ids": ["Item_002"],
+    "ground_truth_summary": "The expected tracking status for an order held for duties payment is 'Scanned awaiting duties/payment'. This is the correct status — it is not an error.",
+    "must_mention": ["Scanned awaiting duties/payment"],
+    "must_not_mention": []
+  },
+  {
+    "id": "HELD-004",
+    "question": "My order is from ASOS being delivered to Israel. Is the time limit to pay duties different?",
+    "expected_topic": "order_held_pending_payment",
+    "expected_item_ids": ["Item_004"],
+    "ground_truth_summary": "ASOS and passport shipping orders to Israel are held for 14 days instead of the standard 7 days.",
+    "must_mention": ["14 days", "ASOS", "Israel"],
+    "must_not_mention": []
+  },
+  {
+    "id": "REF-001",
+    "question": "I don't want to pay the duties. Will they just deliver the parcel anyway if I ignore it?",
+    "expected_topic": "refusing_payment",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "If duties are not paid within the holding period, the parcel is automatically returned to the retailer. APG cannot cancel or redirect this process once it begins.",
+    "must_mention": ["automatically returned", "retailer"],
+    "must_not_mention": ["parcel will be delivered without payment"]
+  },
+  {
+    "id": "REF-002",
+    "question": "My parcel was sent back to the shop. How long will it take and can I track the return?",
+    "expected_topic": "refusing_payment",
+    "expected_item_ids": ["Item_002"],
+    "ground_truth_summary": "Returns are untrackable — tracking will remain as 'Scanned awaiting duties/payment' until the parcel reaches the retailer. Returns take up to 30 days.",
+    "must_mention": ["30 days", "untrackable"],
+    "must_not_mention": []
+  },
+  {
+    "id": "REF-003",
+    "question": "I never agreed to pay duties when I placed my order, this can't be legal",
+    "expected_topic": "refusing_payment",
+    "expected_item_ids": ["Item_006"],
+    "ground_truth_summary": "Duties are a legal government requirement set by the destination country's customs authority. APG cannot waive or override them. The customer's recourse is with the retailer or their country's customs authority.",
+    "must_mention": ["legal", "government", "cannot waive"],
+    "must_not_mention": ["optional", "negotiable", "APG can waive"]
+  },
+  {
+    "id": "REF-004",
+    "question": "My payment link expired and the parcel is being returned. When do I get my money back?",
+    "expected_topic": "refusing_payment",
+    "expected_item_ids": ["Item_003", "Item_007"],
+    "ground_truth_summary": "The parcel returns to the retailer (up to 30 days). The customer contacts the retailer to request a refund and should allow up to 14 days from when the return is received for it to be processed. APG has no role in the refund.",
+    "must_mention": ["retailer", "14 days"],
+    "must_not_mention": ["APG processes the refund", "APG will issue a refund"]
+  },
+  {
+    "id": "IDV-001",
+    "question": "Why does APG need my ID just to pay duties? Isn't that a bit much?",
+    "expected_topic": "id_verification",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "ID verification is a legal requirement imposed by the destination country's customs authority, not by APG. APG facilitates the process on behalf of customs as a condition of clearance.",
+    "must_mention": ["legal requirement", "destination country", "customs"],
+    "must_not_mention": ["APG requires ID for its own records"]
+  },
+  {
+    "id": "IDV-002",
+    "question": "What ID documents do you accept? I don't have my passport — can I use a driving licence?",
+    "expected_topic": "id_verification",
+    "expected_item_ids": ["Item_002"],
+    "ground_truth_summary": "A passport is the accepted form of identification. If unsure whether another document will be accepted, contact APG directly before submitting.",
+    "must_mention": ["passport"],
+    "must_not_mention": []
+  },
+  {
+    "id": "IDV-003",
+    "question": "How do I actually send you my ID? Should I just reply to your email with a photo attached?",
+    "expected_topic": "id_verification",
+    "expected_item_ids": ["Item_003"],
+    "ground_truth_summary": "ID is submitted through the secure payment portal by following on-screen instructions. Upload is done through the portal, not via email.",
+    "must_mention": ["portal", "upload"],
+    "must_not_mention": ["reply to the email", "send via email"]
+  },
+  {
+    "id": "DUT-001",
+    "question": "Why am I being charged duties? APG isn't a government organisation, why are they collecting tax?",
+    "expected_topic": "what_are_duties_and_taxes",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "Import duties are government-imposed charges set by the destination country's customs authority. APG is legally required to collect them on behalf of customs before releasing the parcel for delivery.",
+    "must_mention": ["government-imposed", "customs authority", "destination country"],
+    "must_not_mention": ["APG sets the duty amount", "APG decides the charges"]
+  },
+  {
+    "id": "DUT-002",
+    "question": "The parcel is being sent as a gift — shouldn't it be exempt from duties?",
+    "expected_topic": "what_are_duties_and_taxes",
+    "expected_item_ids": ["Item_003"],
+    "ground_truth_summary": "Gift exemptions vary by country and are not guaranteed. The retailer may have indicated the item is a gift but this does not automatically exempt it from duties.",
+    "must_mention": ["gift exemptions", "not guaranteed"],
+    "must_not_mention": ["gifts are always exempt", "gift items have no duties"]
+  },
+  {
+    "id": "DUT-003",
+    "question": "I've ordered from this brand loads of times before and never been charged duties. Why is it happening now?",
+    "expected_topic": "what_are_duties_and_taxes",
+    "expected_item_ids": ["Item_003"],
+    "ground_truth_summary": "Thresholds apply per order based on individual order value, not on purchase history. Previous orders may have been below the threshold. Each order is assessed independently.",
+    "must_mention": ["per order", "individual value", "threshold"],
+    "must_not_mention": []
+  },
+  {
+    "id": "COM-001",
+    "question": "Who actually decides how much duty I have to pay — is it APG or someone else?",
+    "expected_topic": "common",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "Duties are set by the destination country's government (customs authority), not by APG. APG is a logistics partner acting as a collecting agent for duties and has no control over the amount charged.",
+    "must_mention": ["customs authority", "not by APG"],
+    "must_not_mention": ["APG determines the duty amount", "APG sets duties"]
+  },
+  {
+    "id": "COM-002",
+    "question": "What's the best way to contact APG? When are you open?",
+    "expected_topic": "common",
+    "expected_item_ids": ["Item_002"],
+    "ground_truth_summary": "APG support is available Monday–Friday 09:00–17:00 UK time. Email: generalsupport@apgecommerce.com. Phone: +44 203 962 0242.",
+    "must_mention": ["+44 203 962 0242", "09:00", "generalsupport@apgecommerce.com"],
+    "must_not_mention": []
+  },
+  {
+    "id": "COM-003",
+    "question": "I have a problem with my duties payment, I need to speak to someone at APG",
+    "expected_topic": "common",
+    "expected_item_ids": ["Item_002"],
+    "ground_truth_summary": "APG support can be reached by email at generalsupport@apgecommerce.com or by phone at +44 203 962 0242, Monday–Friday 09:00–17:00 UK time.",
+    "must_mention": ["generalsupport@apgecommerce.com", "+44 203 962 0242"],
+    "must_not_mention": []
+  },
+  {
+    "id": "DAM-001",
+    "question": "My parcel arrived and everything inside is completely smashed. The items are broken",
+    "expected_topic": "damaged_goods",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "The customer must contact the retailer directly to request a replacement or refund. APG does not process damage claims or offer compensation for damaged goods.",
+    "must_mention": ["retailer", "replacement", "refund"],
+    "must_not_mention": ["APG will compensate", "APG processes damage claims"]
+  },
+  {
+    "id": "DAM-002",
+    "question": "I opened my delivery and one of the items I ordered is missing from inside the parcel",
+    "expected_topic": "damaged_goods",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "The customer should contact the retailer to report the missing item. APG ships parcels exactly as received from the retailer.",
+    "must_mention": ["retailer", "missing"],
+    "must_not_mention": ["APG is responsible for missing items"]
+  },
+  {
+    "id": "DAM-003",
+    "question": "APG clearly damaged my items during shipping. I want compensation directly from APG",
+    "expected_topic": "damaged_goods",
+    "expected_item_ids": ["Item_001"],
+    "ground_truth_summary": "APG does not offer compensation, replacements, or refunds for damaged goods. The customer must contact the retailer directly, who will offer a replacement or refund per their own policy.",
+    "must_mention": ["retailer", "does not offer compensation"],
+    "must_not_mention": ["APG will compensate you"]
+  }
+]
