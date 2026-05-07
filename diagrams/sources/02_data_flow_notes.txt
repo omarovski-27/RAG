@@ -1,0 +1,6 @@
+Use the saved 02_data_flow.drawio for the authoritative mxGraph XML.
+Key requirements from PROJECT_BIBLE.md Section 13D:
+- 9 numbered boxes matching Section 4B
+- Vertical flow top to bottom
+- Tool decision diamond loops back to the Claude call step
+- Arrow labels show data moving between stages

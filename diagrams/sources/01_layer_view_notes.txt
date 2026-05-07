@@ -1,0 +1,7 @@
+Use the saved 01_layer_view.drawio for the authoritative mxGraph XML.
+This source companion captures the intended structure from PROJECT_BIBLE.md Section 13D:
+- User browser on top
+- Streamlit app and LangChain pipeline on the laptop
+- Anthropic API on the right via HTTPS
+- Local storage boxes for /kb, /indexes, /logs
+- Green for local, orange for external, grey for storage, blue for user

@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant UI as Streamlit UI
+    participant Pipe as LangChain Pipeline
+    participant Claude as Claude API
+    participant Tool as get_tracking_status
+
+    User->>UI: Ask "Where is APG99999?"
+    UI->>Pipe: question + chat history
+    Pipe->>Pipe: Retrieve KB chunks and assemble prompt
+    Pipe->>Claude: messages + retrieved context
+    Claude-->>Pipe: tool_use(get_tracking_status, tracking_number=APG99999)
+    Pipe->>Tool: Dispatch tool call
+    Tool-->>Pipe: {status: "Held pending duties payment"}
+    Pipe->>Claude: tool_result + same retrieved chunks
+    Claude-->>Pipe: Final grounded answer
+    Pipe-->>UI: Stream tokens
+    UI-->>User: Show answer + feedback prompt
+
+    alt Tracking number not found
+        Tool-->>Pipe: {status: "Tracking number not found"}
+        Pipe->>Claude: tool_result not_found
+        Claude-->>Pipe: Ask user to verify tracking number
+        Pipe-->>UI: Stream clarification response
+    end

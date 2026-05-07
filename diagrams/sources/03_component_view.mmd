@@ -1,0 +1,38 @@
+graph TD
+    app["app.py<br/>Session 10<br/>Streamlit UI entry point"]
+    chain["chain.py<br/>Session 4<br/>Pipeline orchestration"]
+    memory["memory.py<br/>Session 9<br/>Session history wrapper"]
+    retriever["retriever.py<br/>Session 5-6<br/>Hybrid retrieval and reranking"]
+    llm["llm.py<br/>Session 3<br/>ChatAnthropic configuration"]
+    prompts["prompts.py<br/>Session 4<br/>System prompts and rules"]
+    tools["tools.py<br/>Session 8<br/>Tracking and escalation tools"]
+    logger["logger.py<br/>Session 6<br/>Structured JSON logging"]
+    embedder["embedder.py<br/>Session 2<br/>Builds FAISS indexes"]
+    loader["loader.py<br/>Session 1<br/>Loads KB markdown into Documents"]
+    kb["/kb<br/>Local markdown knowledge base"]
+    indexes["/indexes<br/>FAISS index artifacts"]
+    logs["/logs<br/>queries.jsonl and escalations"]
+    anthropic["Anthropic API<br/>Claude Haiku 4.5"]
+
+    app --> chain
+    app --> memory
+    chain --> retriever
+    chain --> llm
+    chain --> prompts
+    chain --> tools
+    chain --> logger
+    retriever --> embedder
+    retriever --> loader
+    embedder --> loader
+    loader --> kb
+    embedder --> indexes
+    logger --> logs
+    llm --> anthropic
+
+    classDef local fill:#C8E6C9,stroke:#2E7D32,color:#000;
+    classDef storage fill:#E0E0E0,stroke:#424242,color:#000;
+    classDef external fill:#FFE0B2,stroke:#E65100,color:#000;
+
+    class app,chain,memory,retriever,llm,prompts,tools,logger,embedder,loader local;
+    class kb,indexes,logs storage;
+    class anthropic external;

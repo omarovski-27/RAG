@@ -1,0 +1,6 @@
+Use the saved 06_comparison.drawio for the authoritative mxGraph XML.
+Key requirements from PROJECT_BIBLE.md Section 13D:
+- Two columns: Copilot Studio current vs Local RAG proposed
+- Highlight extensibility, observability, cost scaling, vendor lock-in
+- Use palette from Section 13C
+- Title at top and legend at bottom-right

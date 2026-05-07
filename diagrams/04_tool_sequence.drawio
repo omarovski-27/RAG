@@ -1,0 +1,33 @@
+<mxfile host="app.diagrams.net" modified="2026-05-05T00:00:00.000Z" agent="GitHub Copilot GPT-5.4" version="24.7.17">
+  <diagram id="tool-sequence" name="04 Tool Sequence">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="APG Local RAG Chatbot - Tool Call Sequence" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="305" y="20" width="560" height="30" as="geometry"/></mxCell>
+        <mxCell id="u" value="User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0D47A1;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="35" y="70" width="150" height="45" as="geometry"/></mxCell>
+        <mxCell id="ui" value="Streamlit UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0D47A1;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="235" y="70" width="150" height="45" as="geometry"/></mxCell>
+        <mxCell id="pipe" value="LangChain Pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="435" y="70" width="170" height="45" as="geometry"/></mxCell>
+        <mxCell id="claude" value="Claude API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="670" y="70" width="150" height="45" as="geometry"/></mxCell>
+        <mxCell id="tool" value="Tracking Tool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="900" y="70" width="160" height="45" as="geometry"/></mxCell>
+        <mxCell id="l1" value="" style="shape=line;strokeColor=#999999;dashed=1;" vertex="1" parent="1"><mxGeometry x="110" y="125" width="1" height="590" as="geometry"/></mxCell>
+        <mxCell id="l2" value="" style="shape=line;strokeColor=#999999;dashed=1;" vertex="1" parent="1"><mxGeometry x="310" y="125" width="1" height="590" as="geometry"/></mxCell>
+        <mxCell id="l3" value="" style="shape=line;strokeColor=#999999;dashed=1;" vertex="1" parent="1"><mxGeometry x="520" y="125" width="1" height="590" as="geometry"/></mxCell>
+        <mxCell id="l4" value="" style="shape=line;strokeColor=#999999;dashed=1;" vertex="1" parent="1"><mxGeometry x="745" y="125" width="1" height="590" as="geometry"/></mxCell>
+        <mxCell id="l5" value="" style="shape=line;strokeColor=#999999;dashed=1;" vertex="1" parent="1"><mxGeometry x="980" y="125" width="1" height="590" as="geometry"/></mxCell>
+        <mxCell id="a1" value="Ask: Where is APG99999?" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="u" target="ui"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="110" y="160"/><mxPoint x="310" y="160"/></Array></mxGeometry></mxCell>
+        <mxCell id="a2" value="question + chat history" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="ui" target="pipe"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="310" y="210"/><mxPoint x="520" y="210"/></Array></mxGeometry></mxCell>
+        <mxCell id="step1" value="Retrieve KB chunks and assemble prompt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="1"><mxGeometry x="440" y="235" width="160" height="45" as="geometry"/></mxCell>
+        <mxCell id="a3" value="messages + retrieved context" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipe" target="claude"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="520" y="310"/><mxPoint x="745" y="310"/></Array></mxGeometry></mxCell>
+        <mxCell id="a4" value="tool_use(get_tracking_status, APG99999)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;dashed=1;" edge="1" parent="1" source="claude" target="pipe"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="745" y="360"/><mxPoint x="520" y="360"/></Array></mxGeometry></mxCell>
+        <mxCell id="a5" value="Dispatch tool call" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipe" target="tool"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="520" y="410"/><mxPoint x="980" y="410"/></Array></mxGeometry></mxCell>
+        <mxCell id="a6" value="{status: Held pending duties payment}" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;dashed=1;" edge="1" parent="1" source="tool" target="pipe"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="980" y="460"/><mxPoint x="520" y="460"/></Array></mxGeometry></mxCell>
+        <mxCell id="a7" value="tool_result + retrieved chunks" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipe" target="claude"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="520" y="510"/><mxPoint x="745" y="510"/></Array></mxGeometry></mxCell>
+        <mxCell id="a8" value="Final grounded answer" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;dashed=1;" edge="1" parent="1" source="claude" target="pipe"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="745" y="560"/><mxPoint x="520" y="560"/></Array></mxGeometry></mxCell>
+        <mxCell id="a9" value="Stream tokens" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipe" target="ui"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="520" y="610"/><mxPoint x="310" y="610"/></Array></mxGeometry></mxCell>
+        <mxCell id="a10" value="Render answer + feedback prompt" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="ui" target="u"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="310" y="660"/><mxPoint x="110" y="660"/></Array></mxGeometry></mxCell>
+        <mxCell id="alt" value="ALT: if tool returns 'Tracking number not found', Claude asks the user to verify the tracking number instead of composing a duties answer." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#B71C1C;fontSize=11;" vertex="1" parent="1"><mxGeometry x="820" y="700" width="280" height="70" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

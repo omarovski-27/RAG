@@ -1,0 +1,33 @@
+<mxfile host="app.diagrams.net" modified="2026-05-05T00:00:00.000Z" agent="GitHub Copilot GPT-5.4" version="24.7.17">
+  <diagram id="data-flow" name="02 Data Flow">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="APG Local RAG Chatbot - One Query Data Flow" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="560" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1" value="1. User input&lt;br&gt;&quot;Does my parcel to Saudi Arabia need duties?&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0D47A1;fontSize=12;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="340" y="70" width="500" height="58" as="geometry"/></mxCell>
+        <mxCell id="s2" value="2. Streamlit captures input&lt;br&gt;append to chat history" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;" vertex="1" parent="1"><mxGeometry x="340" y="145" width="500" height="58" as="geometry"/></mxCell>
+        <mxCell id="s3" value="3. EnsembleRetriever&lt;br&gt;BM25 + FAISS across all 9 indexes&lt;br&gt;returns top 20 candidates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;" vertex="1" parent="1"><mxGeometry x="340" y="220" width="500" height="70" as="geometry"/></mxCell>
+        <mxCell id="s4" value="4. CrossEncoderReranker&lt;br&gt;re-scores 20 candidates&lt;br&gt;returns top 5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;" vertex="1" parent="1"><mxGeometry x="340" y="307" width="500" height="70" as="geometry"/></mxCell>
+        <mxCell id="s5" value="5. PromptTemplate assembles&lt;br&gt;system + history + chunks + question&lt;br&gt;cache_control on system + chunks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;" vertex="1" parent="1"><mxGeometry x="340" y="394" width="500" height="75" as="geometry"/></mxCell>
+        <mxCell id="s6" value="6. ChatAnthropic call&lt;br&gt;streaming with bound tools" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=12;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="340" y="486" width="500" height="62" as="geometry"/></mxCell>
+        <mxCell id="decision" value="7. Did model call a tool?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=12;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="470" y="565" width="240" height="110" as="geometry"/></mxCell>
+        <mxCell id="tool" value="tools.py dispatcher&lt;br&gt;run tool and create tool_result message" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=12;" vertex="1" parent="1"><mxGeometry x="820" y="585" width="240" height="70" as="geometry"/></mxCell>
+        <mxCell id="s8" value="8. Response streams to Streamlit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0D47A1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="340" y="700" width="500" height="55" as="geometry"/></mxCell>
+        <mxCell id="s9" value="9. Log entry written + feedback prompt rendered" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;" vertex="1" parent="1"><mxGeometry x="340" y="770" width="500" height="45" as="geometry"/></mxCell>
+        <mxCell id="e1" value="question" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="s1" target="s2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="question + history" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="s2" target="s3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="20 candidates" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="s3" target="s4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="top 5 chunks" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="s4" target="s5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="prompt" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="s5" target="s6"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" value="model output" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="s6" target="decision"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" value="Yes" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="decision" target="tool"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="tool_result loops back" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="tool" target="s6"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1080" y="517"/><mxPoint x="920" y="517"/></Array></mxGeometry></mxCell>
+        <mxCell id="e9" value="No" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="decision" target="s8"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" value="tokens" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="s8" target="s9"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,38 @@
+<mxfile host="app.diagrams.net" modified="2026-05-05T00:00:00.000Z" agent="GitHub Copilot GPT-5.4" version="24.7.17">
+  <diagram id="comparison" name="06 Comparison">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Copilot Studio vs Local RAG - Architecture Comparison" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="245" y="20" width="690" height="30" as="geometry"/></mxCell>
+        <mxCell id="leftHead" value="Copilot Studio (current)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="70" y="80" width="420" height="55" as="geometry"/></mxCell>
+        <mxCell id="rightHead" value="Local RAG (proposed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="650" y="80" width="420" height="55" as="geometry"/></mxCell>
+        <mxCell id="l1" value="Microsoft cloud hosted bot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;" vertex="1" parent="1"><mxGeometry x="100" y="165" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="l2" value="GUI-defined topics and flows" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;" vertex="1" parent="1"><mxGeometry x="100" y="235" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="l3" value="KB content in Dataverse / connectors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;" vertex="1" parent="1"><mxGeometry x="100" y="305" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="l4" value="Power Automate tracking + ticket flows" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;" vertex="1" parent="1"><mxGeometry x="100" y="375" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="l5" value="Opaque routing / limited observability" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#B71C1C;" vertex="1" parent="1"><mxGeometry x="100" y="445" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="l6" value="$200 per 25k messages (bundle pricing)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;" vertex="1" parent="1"><mxGeometry x="100" y="515" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="r1" value="Laptop or small server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;" vertex="1" parent="1"><mxGeometry x="680" y="165" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="r2" value="Code-defined chain and retrievers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;" vertex="1" parent="1"><mxGeometry x="680" y="235" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="r3" value="KB on local disk (/kb) and FAISS indexes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;" vertex="1" parent="1"><mxGeometry x="680" y="305" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="r4" value="Native tool use for tracking and escalation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;" vertex="1" parent="1"><mxGeometry x="680" y="375" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="r5" value="Observable routing and JSON logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;" vertex="1" parent="1"><mxGeometry x="680" y="445" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="r6" value="Per-token cost with prompt caching" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;" vertex="1" parent="1"><mxGeometry x="680" y="515" width="360" height="52" as="geometry"/></mxCell>
+        <mxCell id="c1" value="Extensibility" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#424242;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="180" width="110" height="30" as="geometry"/></mxCell>
+        <mxCell id="c2" value="Observability" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#424242;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="460" width="110" height="30" as="geometry"/></mxCell>
+        <mxCell id="c3" value="Cost scaling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#424242;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="530" width="110" height="30" as="geometry"/></mxCell>
+        <mxCell id="c4" value="Vendor lock-in" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#424242;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="250" width="110" height="30" as="geometry"/></mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="l1" target="r1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="l2" target="r2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="l4" target="r4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="l5" target="r5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="l6" target="r6"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="legend1" value="Legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#424242;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="900" y="690" width="140" height="30" as="geometry"/></mxCell>
+        <mxCell id="legend2" value="Green = local processing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="1"><mxGeometry x="900" y="725" width="180" height="28" as="geometry"/></mxCell>
+        <mxCell id="legend3" value="Orange = external platform/API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=11;" vertex="1" parent="1"><mxGeometry x="900" y="758" width="180" height="28" as="geometry"/></mxCell>
+        <mxCell id="legend4" value="Grey = storage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;fontSize=11;" vertex="1" parent="1"><mxGeometry x="900" y="791" width="180" height="28" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
