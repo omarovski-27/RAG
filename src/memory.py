@@ -102,6 +102,7 @@ def _trim_history(session_id: str, max_pairs: int = MAX_HISTORY_TURNS) -> None:
 
 # Module-level cache — built once per process
 _memory_chain: RunnableWithMessageHistory | None = None
+_memory_chain_stream: RunnableWithMessageHistory | None = None
 
 # We keep a reference to the last retrieved docs so ask_with_memory can
 # return them alongside the answer (needed by the logger).
@@ -160,6 +161,28 @@ def get_memory_chain(
     return _memory_chain
 
 
+def get_memory_chain_stream(
+    retriever: RerankingRetriever | None = None,
+) -> RunnableWithMessageHistory:
+    """Streaming singleton — same as get_memory_chain but LLM has streaming=True."""
+    global _memory_chain_stream
+    if _memory_chain_stream is None:
+        if retriever is None:
+            retriever = get_reranking_retriever()
+        prompt = get_rag_prompt_v2()
+        llm = get_llm(streaming=True)
+        core_chain = prompt | llm | StrOutputParser()
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+            _memory_chain_stream = RunnableWithMessageHistory(
+                core_chain,
+                get_session_history,
+                input_messages_key="question",
+                history_messages_key="history",
+            )
+    return _memory_chain_stream
+
+
 def ask_with_memory(
     question: str,
     session_id: str,
@@ -204,6 +227,48 @@ def ask_with_memory(
     _trim_history(session_id)
 
     return answer, docs, latency_ms
+
+
+def stream_with_memory(
+    question: str,
+    session_id: str,
+    retriever: RerankingRetriever | None = None,
+) -> Tuple["Iterator[str]", List[Document], float]:
+    """
+    Streaming variant of ask_with_memory.
+
+    Returns
+    -------
+    token_iter    : generator of string tokens — pass to st.write_stream()
+    retrieved_docs: reranked chunks (for logger)
+    start         : perf_counter() timestamp before retrieval started —
+                    caller computes latency = (time.perf_counter() - start) * 1000
+                    AFTER consuming the stream.
+    """
+    from typing import Iterator  # local import avoids circular at module level
+
+    if retriever is None:
+        retriever = get_reranking_retriever()
+
+    chain = get_memory_chain_stream(retriever)
+
+    start = time.perf_counter()
+    docs = retriever.get_relevant_documents(question)
+    context = _format_docs(docs)
+
+    raw_stream = chain.stream(
+        {"question": question, "context": context},
+        config={"configurable": {"session_id": session_id}},
+    )
+
+    def _token_iter() -> Iterator[str]:
+        for chunk in raw_stream:
+            if chunk:
+                yield chunk
+        # Trim history after stream is fully consumed
+        _trim_history(session_id)
+
+    return _token_iter(), docs, start
 
 
 def _format_docs(docs: List[Document]) -> str:

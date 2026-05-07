@@ -28,5 +28,5 @@ LLM_MAX_TOKENS  = 1024
 BM25_WEIGHT       = 0.4
 FAISS_WEIGHT      = 0.6
 K_PER_RETRIEVER   = 10   # candidates from each retriever before fusion
-K_INITIAL_RERANK  = 20   # candidates sent to cross-encoder
+K_INITIAL_RERANK  = 10   # candidates sent to cross-encoder (was 20; halves rerank latency)
 K_FINAL           = 5    # chunks that go into the prompt

@@ -32,7 +32,8 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from src.logger import ConversationLogger, timer
-from src.memory import ask_with_memory, clear_session
+import time
+from src.memory import ask_with_memory, clear_session, stream_with_memory
 from src.tools import (
     ESCALATION_TOOL,
     TRACKING_TOOL,
@@ -140,7 +141,7 @@ st.caption("Customer support powered by APG Local RAG · PoC")
 with st.sidebar:
     st.markdown("### Session Info")
     st.code(st.session_state.session_id[:8] + "...", language=None)
-    st.markdown(f"**Turns:** {len(st.session_state.messages) // 2}")
+    st.markdown(f"**Turns:** {st.session_state.logger.turn_number}")
     if st.session_state.escalated:
         st.error("⚠ Escalated to human")
     if st.session_state.session_closed:
@@ -273,16 +274,14 @@ if user_input := st.chat_input(placeholder, disabled=input_disabled):
                 "meta": track_result,
             })
 
-    # ── RAG answer ────────────────────────────────────────────────────────
+    # ── RAG answer (streamed) ─────────────────────────────────────────────
     with st.chat_message("assistant", avatar="📦"):
-        with st.spinner("Thinking…"):
-            with timer() as t:
-                answer, docs, latency = ask_with_memory(
-                    user_input,
-                    session_id=st.session_state.session_id,
-                )
-
-        st.markdown(answer)
+        token_iter, docs, t0 = stream_with_memory(
+            user_input,
+            session_id=st.session_state.session_id,
+        )
+        answer = st.write_stream(token_iter)
+        latency = (time.perf_counter() - t0) * 1000
         topics = list({d.metadata.get("topic", "?") for d in docs})
         st.caption(f"⚡ {latency:.0f}ms · {len(docs)} chunks from: {', '.join(topics)}")
 
