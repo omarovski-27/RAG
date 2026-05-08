@@ -1,0 +1,11 @@
+langchain
+langchain-community
+langchain-anthropic
+langchain-huggingface
+sentence-transformers
+faiss-cpu
+rank-bm25
+streamlit
+python-dotenv
+anthropic
+pydantic

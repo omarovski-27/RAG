@@ -1,0 +1,19 @@
+stateDiagram-v2
+    [*] --> AwaitingQuestion
+    AwaitingQuestion --> Generating: question_received
+    Generating --> AwaitingFeedback: answer_streamed
+    AwaitingFeedback --> AwaitingQuestion: feedback_yes / reset counter
+    AwaitingFeedback --> AwaitingQuestion: feedback_no [counter < 3] / increment counter
+    AwaitingFeedback --> Escalated: feedback_no [counter >= 3]
+    Escalated --> [*]: escalate_to_human
+
+    note right of AwaitingFeedback
+      Show "Did this answer your question?"
+      Yes resets counter
+      No increments counter
+    end note
+
+    note right of Escalated
+      Offer escalate_to_human
+      End current session
+    end note

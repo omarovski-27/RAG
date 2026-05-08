@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" modified="2026-05-05T00:00:00.000Z" agent="GitHub Copilot GPT-5.4" version="24.7.17">
+  <diagram id="layer-view" name="01 Layer View">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="APG Local RAG Chatbot - Layer View" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="334" y="20" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="user" value="USER (browser)&lt;br&gt;Blue = user action" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0D47A1;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="70" width="1020" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="streamlit" value="STREAMLIT APP&lt;br&gt;localhost:8501&lt;br&gt;Chat UI, session state, escalation counter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="70" y="175" width="720" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="pipeline" value="LANGCHAIN PIPELINE (in-process)" style="swimlane;html=1;rounded=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontStyle=1;fontSize=13;startSize=28;" vertex="1" parent="1">
+          <mxGeometry x="70" y="290" width="720" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="ensemble" value="EnsembleRetriever&lt;br&gt;BM25 + FAISS in parallel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="pipeline">
+          <mxGeometry x="25" y="45" width="200" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="rerank" value="CrossEncoderReranker&lt;br&gt;top-k filter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="pipeline">
+          <mxGeometry x="255" y="45" width="200" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="prompt" value="PromptTemplate&lt;br&gt;system + history + chunks + query" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="pipeline">
+          <mxGeometry x="485" y="45" width="210" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="chatanthropic" value="ChatAnthropic&lt;br&gt;tools + caching + streaming" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="pipeline">
+          <mxGeometry x="140" y="145" width="210" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="dispatcher" value="Tool dispatcher&lt;br&gt;get_tracking_status / escalate_to_human" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=11;" vertex="1" parent="pipeline">
+          <mxGeometry x="390" y="145" width="230" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="embed" value="Embedding model&lt;br&gt;BGE-small-en-v1.5&lt;br&gt;Local, free" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="635" width="250" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="reranker-model" value="Reranker model&lt;br&gt;cross-encoder/ms-marco-MiniLM-L-6-v2&lt;br&gt;Local, free" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="380" y="635" width="250" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="anthropic" value="ANTHROPIC API&lt;br&gt;Claude Haiku 4.5&lt;br&gt;Tool calls + streaming&lt;br&gt;Pay per token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="235" width="250" height="145" as="geometry"/>
+        </mxCell>
+        <mxCell id="kb" value="/kb&lt;br&gt;markdown KB files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="840" y="455" width="250" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="indexes" value="/indexes&lt;br&gt;FAISS topic indexes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="840" y="530" width="250" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="logs" value="/logs&lt;br&gt;JSON query logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="840" y="605" width="250" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="note1" value="All KB content stays here.&lt;br&gt;Never leaves the machine." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="740" width="280" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="note2" value="Receives only:&lt;br&gt;user question + retrieved chunks + system prompt" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="390" width="250" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="note3" value="Local disk only.&lt;br&gt;KB and logs gitignored." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="680" width="220" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="HTTP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="user" target="streamlit">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="Python function calls" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="streamlit" target="pipeline">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipeline" target="anthropic">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="local model calls" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipeline" target="embed">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="cross-encoder scoring" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipeline" target="reranker-model">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" value="reads" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipeline" target="kb">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="loads" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipeline" target="indexes">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" value="writes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="pipeline" target="logs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

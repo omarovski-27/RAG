@@ -1,0 +1,42 @@
+
+==================================================================================================
+  APG Chat - Cost Comparison: Copilot Studio vs Local RAG
+==================================================================================================
+
+  Sessions analysed      : 5
+  Engaged sessions       : 5
+  Avg turns / session    : 2.40
+  Avg input tokens / ses : 300
+  Avg output tokens / ses: 105
+  Cache hit rate assumed : 30% cost reduction on input
+  Baseline volume        : 25,000 messages/month
+  Sessions at baseline   : 10,417/month
+  Note: Token data from 2/5 sessions (streaming sessions do not log tokens yet).
+
++----------------------------------------+--------------------------+----------------------------+
+| Metric                                 |           Copilot Studio |   Local RAG (Claude Haiku) |
++----------------------------------------+--------------------------+----------------------------+
+| Pricing model                          |   $200 / 25k msgs (flat) |   Token-based, infra $0/mo |
++----------------------------------------+--------------------------+----------------------------+
+| Cost per session                       |                  $0.0192 |                  $0.000154 |
+| Cost per 1,000 sessions                |                   $19.20 |                    $0.1538 |
++----------------------------------------+--------------------------+----------------------------+
+| Monthly - current (25k msgs)           |                  $200.00 |                      $1.60 |
+| Monthly - 2x volume (50k msgs)         |                  $400.00 |                      $3.20 |
++----------------------------------------+--------------------------+----------------------------+
+| Annual - current volume                |                $2,400.00 |                     $19.22 |
+| Annual saving vs Copilot Studio        |                       -- |                  $2,380.78 |
+| Saving percentage                      |                       -- |                      99.2% |
++----------------------------------------+--------------------------+----------------------------+
+
+  Assumptions:
+    Haiku input  : $0.25 per 1M tokens
+    Haiku output : $1.25 per 1M tokens
+    Cache saving : multiply input cost by 0.3 (70% hit rate, 90% cheaper)
+    Infrastructure: $0/month (local deployment)
+    Copilot Studio: $200 per 25,000 messages; flat tier per block
+
+  SLIDE SUMMARY:
+  At 25,000 messages/month, Local RAG costs $1.60/month vs Copilot Studio's $200.00/month -- saving $2,380.78 per year (99% cheaper).
+
+==================================================================================================

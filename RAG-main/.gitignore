@@ -1,0 +1,30 @@
+# Secrets
+.env
+
+# Virtual environments
+venv/
+.venv/
+
+# Business / generated content — must be rebuilt locally
+kb/
+indexes/
+logs/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Dependency lock files (requirements.lock is intentionally committed)
+*.lock
+!requirements.lock
+
+# Eval output (generated CSVs — not source)
+eval/results/
+
+# Claude / AI tool configs (local only)
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
